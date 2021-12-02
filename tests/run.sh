@@ -74,6 +74,10 @@ if $INIT_ONLY; then
     echo '--------------------'
     echo 'Install Azure Storage Blobs client library for Python'
     pip install azure-storage-blob
+    echo '--------------------'
+    echo 'Enable different multi-architecture containers using QEMU'
+    sudo apt-get install qemu binfmt-support qemu-user-static
+    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
 
     # Exit with success
     exit 0;

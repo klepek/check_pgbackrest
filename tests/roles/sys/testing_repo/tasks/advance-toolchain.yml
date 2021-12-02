@@ -1,0 +1,30 @@
+---
+- name: Set the os variable
+  set_fact:
+    os: "{{ ansible_distribution }}{{ ansible_distribution_major_version }}"
+
+- name: Download IBM GPG key for ppc64le CentOS 7
+  rpm_key:
+    key: "https://public.dhe.ibm.com/software/server/POWER/Linux/toolchain/at/redhat/RHEL7/gpg-pubkey-6976a827-5164221b"
+    state: present
+  when: >
+    ansible_architecture == 'ppc64le' and
+    ansible_os_family == 'RedHat' and
+    os == 'CentOS7' and
+    'icinga2' not in group_names
+
+- name: Install Advance Toolchain repository
+  ansible.builtin.yum_repository:
+    name: "advance-toolchain"
+    description: "Advance Toolchain IBM FTP"
+    state: present
+    baseurl: "https://public.dhe.ibm.com/software/server/POWER/Linux/toolchain/at/redhat/RHEL7"
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: "ftp://public.dhe.ibm.com/software/server/POWER/Linux/toolchain/at/redhat/RHELX/gpg-pubkey-6976a827-5164221b"
+    failovermethod: "priority"
+  when: >
+    ansible_architecture == 'ppc64le' and
+    ansible_os_family == 'RedHat' and
+    os == 'CentOS7' and
+    'icinga2' not in group_names

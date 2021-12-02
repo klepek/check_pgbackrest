@@ -27,6 +27,24 @@
     _parts: "{{ docker.image_name.split(':') }}"
     _image_base: "{{ _parts[0] }}"
     _image_tag: "{{ _parts[1] }}"
+  when: "docker.library is not defined"
+
+- name: Build systemd image {{ docker.image_name }} from a specific library
+  docker_image:
+    name: "systemd/{{ docker.library }}-{{ _image_base }}:{{ _image_tag }}"
+    state: present
+    source: build
+    build:
+      path: docker/systemd
+      dockerfile: "{{ _image_base }}.Dockerfile"
+      pull: no
+      args:
+        BASE_IMAGE: "{{ docker.library }}/{{ _image_base }}:{{ _image_tag }}"
+  vars:
+    _parts: "{{ docker.image_name.split(':') }}"
+    _image_base: "{{ _parts[0] }}"
+    _image_tag: "{{ _parts[1] }}"
+  when: "docker.library is defined"
 
 - name: Create docker network
   docker_network:

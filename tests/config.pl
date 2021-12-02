@@ -46,6 +46,7 @@ config.pl [options]
 
  Docker Options:
    --docker-image       docker base image name ('debian:9', 'debian:10', 'ubuntu:18.04', 'ubuntu:20.04', 'centos:7', 'centos:8', 'rockylinux:8')
+   --docker-library     docker library
 
  General Options:
    --help               display usage and exit
@@ -64,6 +65,7 @@ my $strExtraVars;
 my $strDbType;
 my $strDbVersion;
 my $strDockerImage;
+my $strDockerLibrary;
 
 GetOptions(
     'architecture=s' => \$strArchitecture,
@@ -72,6 +74,7 @@ GetOptions(
     'db-type=s' => \$strDbType,
     'db-version=s' => \$strDbVersion,
     'docker-image=s' => \$strDockerImage,
+    'docker-library=s' => \$strDockerLibrary,
     'extra-vars=s' => \$strExtraVars,
     'force' => \$bForce,
     'help' => \$bHelp,
@@ -104,6 +107,7 @@ eval{
     $archConfig->{cluster_vars}->{pg_type} = $strDbType if defined($strDbType);
     $archConfig->{cluster_vars}->{pg_version} = $strDbVersion if defined($strDbVersion);
     $archConfig->{docker}->{image_name} = $strDockerImage if defined($strDockerImage);
+    $archConfig->{docker}->{library} = $strDockerLibrary if defined($strDockerLibrary);
 
     # Add extra cluster vars
     if(defined $strExtraVars and length $strExtraVars){

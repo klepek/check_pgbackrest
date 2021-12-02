@@ -69,6 +69,15 @@
         ansible_os_family == 'Debian' and
         'icinga2' not in group_names
 
+    # Setup Advance Toolchain repository
+    - include_role:
+        name: sys/testing_repo
+        tasks_from: advance-toolchain
+      when: >
+        ansible_architecture == 'ppc64le' and
+        ansible_os_family == 'RedHat' and
+        'icinga2' not in group_names
+
     # Install db server and setup replication
     - set_fact:
         pg_instance_name: "main"

@@ -13,13 +13,20 @@
       - edb-as{{ pg_version }}-server-contrib
       - edb-as{{ pg_version }}-server-libs
       - edb-as{{ pg_version }}-server-client
-      - edb-as{{ pg_version }}-server-llvmjit
       - edb-as{{ pg_version }}-server-sslutils
       - edb-as{{ pg_version }}-server-indexadvisor
       - edb-as{{ pg_version }}-server-sqlprofiler
       - edb-as{{ pg_version }}-server-sqlprotect
       - edb-as{{ pg_version }}-server-sslutils
     state: absent
+  become: yes
+
+- name: Remove non-ppc64le dependencies EPAS packages
+  package:
+    name:
+      - edb-as{{ pg_version }}-server-llvmjit
+    state: absent
+  when: ansible_architecture != 'ppc64le'
   become: yes
 
 - name: Remove EPAS < 14 packages

@@ -24,6 +24,35 @@
     restart_policy: unless-stopped
   vars:
     _exposed_ports: "{{ docker.exposed_ports|default(['22','5432', '5444']) }}"
+  when: "docker.library is not defined"
+  register: docker_container_register
+
+- name: Provision docker container "{{ item.name }}" from a specific library
+  community.docker.docker_container:
+    name: "{{ item.name }}"
+    hostname: "{{ item.name }}"
+    image: "systemd/{{ docker.library }}-{{ docker.image_name }}"
+    state: started
+    pull: no
+    detach: yes
+    exposed_ports: "{{ _exposed_ports }}"
+    published_ports: "{{ _exposed_ports }}"
+    networks:
+      - name: "network_{{ cluster_name }}"
+    networks_cli_compatible: yes
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      - "{{ cluster_dir }}/shared:/shared:z"
+    tmpfs:
+      - "/tmp"
+      - "/run"
+      - "/run/lock"
+    container_default_behavior: compatibility
+    network_mode: default
+    restart_policy: unless-stopped
+  vars:
+    _exposed_ports: "{{ docker.exposed_ports|default(['22','5432', '5444']) }}"
+  when: "docker.library is defined"
   register: docker_container_register
 
 - set_fact:

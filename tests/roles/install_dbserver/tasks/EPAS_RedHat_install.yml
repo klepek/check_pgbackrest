@@ -34,6 +34,14 @@
   when: pg_version|int >= 14
   become: yes
 
+- name: Install non-ppc64le dependencies EPAS packages
+  package:
+    name:
+      - edb-as{{ pg_version }}-server-llvmjit
+    state: present
+  when: ansible_architecture != 'ppc64le'
+  become: yes
+
 - name: Install EPAS packages
   package:
     name:
@@ -42,7 +50,6 @@
       - edb-as{{ pg_version }}-server-contrib
       - edb-as{{ pg_version }}-server-libs
       - edb-as{{ pg_version }}-server-client
-      - edb-as{{ pg_version }}-server-llvmjit
       - edb-as{{ pg_version }}-server-sslutils
       - edb-as{{ pg_version }}-server-indexadvisor
       - edb-as{{ pg_version }}-server-sqlprofiler
